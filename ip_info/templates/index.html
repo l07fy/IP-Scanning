@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Information</title>
+</head>
+<body>
+    <div>
+        <input type="text" id="ips" style="width: 50%;">
+        <button id="click">Click Me</button>
+        
+        <div style="background-color: black;" id="container">
+        </div>
+    </div>
+
+
+    <script>
+        function connect() {
+            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            const socket = new WebSocket(protocol + window.location.host + '/ws/ip_info/');
+            
+            socket.onmessage = function(e){
+                const data = e.data;
+                var div = document.getElementById('container');
+                var paragraph = document.createElement('p');
+                paragraph.textContent = data;
+                paragraph.style.color = 'white';
+                div.appendChild(paragraph);
+            };
+
+            socket.onclose = function(e) {
+                console.log('Socket is closed. Reconnect will be attempted in 5 seconds.', e.reason);
+                setTimeout(function() {
+                    connect();
+                }, 5000);
+            };
+
+            document.getElementById('click').onclick = function(e){
+                const ips = document.getElementById('ips').value;
+
+                socket.send(JSON.stringify({
+                    'ips':ips
+                }));
+            };
+        }
+        connect();
+    </script>
+</body>
+</html>
