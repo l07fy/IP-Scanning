@@ -33,4 +33,4 @@ This project is a Django application for IP Address Reputation Scanning.
 	`└──(venv)─$ python manage.py runserver`
 
 
-The application will be accessible at http://l
+The application will be accessible at http://127.0.0.1:8000/
